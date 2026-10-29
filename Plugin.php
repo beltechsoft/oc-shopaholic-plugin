@@ -27,6 +27,7 @@ use Lovata\Shopaholic\Classes\Event\Price\PriceModelHandler;
 //Product events
 use Lovata\Shopaholic\Classes\Event\Product\ProductModelHandler;
 use Lovata\Shopaholic\Classes\Event\Product\ProductRelationHandler;
+use Lovata\Shopaholic\Classes\Event\Product\ExtendProductFieldsHandler;
 //Promo block events
 use Lovata\Shopaholic\Classes\Event\PromoBlock\PromoBlockModelHandler;
 use Lovata\Shopaholic\Classes\Event\PromoBlock\PromoBlockRelationHandler;
@@ -181,6 +182,7 @@ class Plugin extends PluginBase
         //Product events
         Event::subscribe(ProductModelHandler::class);
         Event::subscribe(ProductRelationHandler::class);
+        Event::subscribe(ExtendProductFieldsHandler::class);
         //Promo block events
         Event::subscribe(PromoBlockModelHandler::class);
         Event::subscribe(PromoBlockRelationHandler::class);

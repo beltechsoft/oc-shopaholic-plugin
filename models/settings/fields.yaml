@@ -10,6 +10,12 @@ tabs:
             span: left
             label: lovata.shopaholic::lang.field.allow_negative_offer_quantity
             type: checkbox
+        single_offer_mode:
+            tab: lovata.toolbox::lang.tab.settings
+            span: left
+            label: lovata.shopaholic::lang.field.single_offer_mode
+            comment: lovata.shopaholic::lang.field.single_offer_mode_comment
+            type: checkbox
         price_include_tax:
             tab: lovata.shopaholic::lang.tab.taxes
             span: left

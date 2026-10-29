@@ -3,12 +3,14 @@
 use Arr;
 use Lang;
 use Flash;
+use Redirect;
 use BackendMenu;
 use Backend\Classes\Controller;
 use Backend\Classes\BackendController;
 
 use Lovata\Shopaholic\Classes\Item\ProductItem;
 use Lovata\Shopaholic\Models\Product;
+use Lovata\Shopaholic\Models\Settings;
 use Lovata\Shopaholic\Classes\Helper\CurrencyHelper;
 use Lovata\Shopaholic\Classes\Import\ImportOfferModelFromXML;
 use Lovata\Shopaholic\Classes\Import\ImportOfferPriceFromXML;
@@ -114,6 +116,26 @@ class Products extends Controller
      * @param string $sHandler
      * @return boolean Returns true if the handler was found. Returns false otherwise.
      */
+    /**
+     * Create offer from relation popup. In single offer mode, reload page
+     * after the second offer is created to replace price fields with offer list.
+     * @return mixed
+     */
+    public function onRelationManageCreate()
+    {
+        $mResult = $this->asExtension('RelationController')->onRelationManageCreate();
+        if (post('_relation_field') != 'offer' || !Settings::getValue('single_offer_mode')) {
+            return $mResult;
+        }
+
+        $obProduct = Product::find(Arr::get($this->params, '0'));
+        if (!empty($obProduct) && $obProduct->offer()->count() <= 2) {
+            return Redirect::refresh();
+        }
+
+        return $mResult;
+    }
+
     protected function runAjaxHandler($sHandler)
     {
         $bResult = parent::runAjaxHandler($sHandler);

@@ -12,6 +12,9 @@
         'offer'                         => 'Offers',
         'currency'                      => 'Currency',
         'check_offer_active'            => 'When you receive a list of active products, check for active offers.',
+        'single_offer_mode'             => 'Product with single offer',
+        'single_offer_mode_comment'     => 'Price, old price and quantity are filled in the product form, the offer is created automatically. Additional variants are added with the "Add offers" button.',
+        'single_offer_section'          => 'Price and stock',
         'allow_negative_offer_quantity' => 'Allow negative offer quantity',
         'additional_category'           => 'Additional categories',
         'promo_block_type'              => 'Promo block with product list',
@@ -80,6 +83,7 @@
         'measure_description'         => 'Manage unit measure',
     ],
     'tab'         => [
+        'single_offer'   => 'Price and stock',
         'offer'          => 'Trade offers',
         'price'          => 'Prices',
         'permissions'    => 'Shopaholic',
@@ -210,11 +214,14 @@
         'measure'         => 'Manage unit measure list',
     ],
     'message'     => [
+        'single_offer_add_after_save'       => 'Variants with different prices (sizes, colors) can be added after saving the product.',
+        'single_offer_add_info'             => 'if the product has variants with different prices (sizes, colors)',
         'import_additional_category_info'   => 'Set the list of additional product categories separated by commas.',
         'import_from_xml_files_is_disabled' => 'Import from XML files is disabled.',
         'import_from_xml_info'              => '<p>You can use <strong>XPath</strong> syntax to set path to elements.</p>',
     ],
     'button'      => [
+        'single_offer_add'      => 'Add offers',
         'import_offer_button'   => 'Import offers from CSV',
         'import_offer_from_xml' => 'Import offers from XML',
         'import_price_from_xml' => 'Import prices from XML',

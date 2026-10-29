@@ -1,0 +1,14 @@
+<?php if ($formModel->exists && $formModel->offer()->count() == 1): ?>
+    <button
+        type="button"
+        class="btn btn-secondary"
+        data-request="onSave"
+        data-request-data="redirect: 0"
+        data-request-success="$.popup({ handler: 'onRelationButtonCreate', extraData: { _relation_field: 'offer', _relation_extra_config: '[]', manage_id: '' } })"
+        data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>">
+        <i class="icon-plus"></i> <?= e(trans('lovata.shopaholic::lang.button.single_offer_add')) ?>
+    </button>
+    <span class="text-muted ms-2"><?= e(trans('lovata.shopaholic::lang.message.single_offer_add_info')) ?></span>
+<?php else: ?>
+    <p class="text-muted mb-0"><?= e(trans('lovata.shopaholic::lang.message.single_offer_add_after_save')) ?></p>
+<?php endif ?>

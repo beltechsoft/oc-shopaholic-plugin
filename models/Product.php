@@ -147,6 +147,8 @@ class Product extends ImportModel
     use Nullable;
     use MultisiteHelperTrait;
 
+    /** Product form fields of single offer (setting "single_offer_mode") */
+    const SINGLE_OFFER_FIELDS = ['single_offer_price', 'single_offer_old_price', 'single_offer_quantity'];
 
     public $table = 'lovata_shopaholic_products';
 
@@ -198,7 +200,7 @@ class Product extends ImportModel
     public $morphMany = [];
 
     public $appends = [];
-    public $purgeable = [];
+    public $purgeable = self::SINGLE_OFFER_FIELDS;
     public $nullable = [];
     public $fillable = [
         'active',
@@ -275,6 +277,103 @@ class Product extends ImportModel
         if (empty($this->slug)) {
             $this->slugAttributes();
         }
+    }
+
+    /**
+     * After save event handler
+     */
+    public function afterSave()
+    {
+        $this->saveSingleOffer();
+    }
+
+    /**
+     * Save price fields from product form into single offer
+     * (setting "single_offer_mode")
+     */
+    protected function saveSingleOffer()
+    {
+        $arFormData = array_intersect_key($this->getOriginalPurgeValues(), array_flip(self::SINGLE_OFFER_FIELDS));
+        if (empty($arFormData) || !Settings::getValue('single_offer_mode')) {
+            return;
+        }
+
+        $obOfferList = $this->offer()->get();
+        if ($obOfferList->count() > 1) {
+            return;
+        }
+
+        $obOffer = $obOfferList->first();
+        if (empty($obOffer)) {
+            $obOffer = new Offer();
+            $obOffer->product_id = $this->id;
+            $obOffer->active = true;
+            $obOffer->name = $this->name;
+        } elseif ($obOffer->name == $this->getOriginal('name')) {
+            $obOffer->name = $this->name;
+        }
+
+        if (array_key_exists('single_offer_price', $arFormData)) {
+            $obOffer->price = $arFormData['single_offer_price'];
+        }
+
+        if (array_key_exists('single_offer_old_price', $arFormData)) {
+            $obOffer->old_price = $arFormData['single_offer_old_price'];
+        }
+
+        if (array_key_exists('single_offer_quantity', $arFormData)) {
+            $obOffer->quantity = (int) $arFormData['single_offer_quantity'];
+        }
+
+        $obOffer->save();
+    }
+
+    /**
+     * Get price of single offer
+     * @return float|string|null
+     */
+    public function getSingleOfferPriceAttribute()
+    {
+        return $this->getSingleOfferValue('single_offer_price', 'price_value');
+    }
+
+    /**
+     * Get old price of single offer
+     * @return float|string|null
+     */
+    public function getSingleOfferOldPriceAttribute()
+    {
+        return $this->getSingleOfferValue('single_offer_old_price', 'old_price_value');
+    }
+
+    /**
+     * Get quantity of single offer
+     * @return int|string|null
+     */
+    public function getSingleOfferQuantityAttribute()
+    {
+        return $this->getSingleOfferValue('single_offer_quantity', 'quantity');
+    }
+
+    /**
+     * Get value from form data or from first offer
+     * @param string $sField
+     * @param string $sOfferField
+     * @return mixed
+     */
+    protected function getSingleOfferValue($sField, $sOfferField)
+    {
+        if (array_key_exists($sField, $this->attributes)) {
+            return $this->attributes[$sField];
+        }
+
+        if (!$this->exists) {
+            return null;
+        }
+
+        $obOffer = $this->offer->first();
+
+        return !empty($obOffer) ? $obOffer->$sOfferField : null;
     }
 
     /**
